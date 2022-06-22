@@ -2,11 +2,6 @@ const axios = require('axios');
 const { expect } = require('chai');
 const { StatusCodes } = require('http-status-codes');
 
-const api = axios.create({
-	baseUrl: 'https://httpbin.org',
-	timeout: 1000,
-});
-
 axios.interceptors.request.use((request) => {
 	const headers = {
 		...request.headers.common,
