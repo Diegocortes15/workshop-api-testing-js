@@ -2,11 +2,59 @@ const axios = require('axios');
 const { expect } = require('chai');
 const { StatusCodes } = require('http-status-codes');
 
+const api = axios.create({
+	baseUrl: 'https://httpbin.org',
+	timeout: 1000,
+});
+
+axios.interceptors.request.use((request) => {
+	const headers = {
+		...request.headers.common,
+		...request.headers[request.method],
+		...request.headers,
+	};
+
+	// remove unrelevant headers to reduce the noise
+	['common', 'get', 'post', 'head', 'put', 'patch', 'delete'].forEach(
+		(header) => {
+			delete headers[header];
+		}
+	);
+
+	const printable = `
+---------------------------------------------- \n
+REQUEST ⏩ \n
+${new Date()}
+Request: ${request.method.toUpperCase()}
+URL:${request.url}
+Headers: ${JSON.stringify(headers, null, 2)} \n
+Data: ${
+		request.data ? JSON.stringify(response.data, null, 2) : 'There is no data'
+	}
+	`;
+
+	console.log(printable);
+	return request;
+});
+
+axios.interceptors.response.use((response) => {
+	const printable = `
+⏩ RESPONSE \n
+${new Date()}
+Status: ${response.status} ${response.statusText}
+Headers: ${JSON.stringify(response.headers, null, 2)} \n
+Data: ${
+		response.data ? JSON.stringify(response.data, null, 2) : 'There is no data'
+	}
+`;
+
+	console.log(printable);
+	return response;
+});
+
 describe('First Api Tests', () => {
 	it('Consume GET Service', async () => {
-		const response = await axios.get('https://httpbin.org/ip').catch((error) => {
-			console.log(error.toJSON());
-		});
+		const response = await axios.get('https://httpbin.org/ip');
 
 		expect(response.status).to.equal(StatusCodes.OK);
 		expect(response.data).to.have.property('origin');
@@ -19,68 +67,37 @@ describe('First Api Tests', () => {
 			city: 'New York',
 		};
 
-		const response = await axios
-			.get('https://httpbin.org/get', { query })
-			.catch((error) => {
-				console.log(error.toJSON());
-			});
+		const response = await axios.get('https://httpbin.org/get', { query });
 
 		expect(response.status).to.equal(StatusCodes.OK);
 		expect(response.config.query).to.eql(query);
 	});
 
 	it('Consume HEAD Service', async () => {
-		const response = await axios
-			.head('https://httpbin.org/get')
-			.catch((error) => {
-				console.log(error.toJSON());
-			});
+		const response = await axios.get('https://httpbin.org/headers');
 
 		expect(response.status).to.equal(StatusCodes.OK);
-		expect(response.data).to.be.empty;
-	});
-
-	it('Consume HEAD Service', async () => {
-		const response = await axios
-			.head('https://httpbin.org/get')
-			.catch((error) => {
-				console.log(error.toJSON());
-			});
-
-		expect(response.status).to.equal(StatusCodes.OK);
-		expect(response.data).to.be.empty;
+		expect(response.data).to.have.property('headers');
 	});
 
 	it('Consume PATCH Service', async () => {
-		const response = await axios
-			.patch('https://httpbin.org/patch')
-			.catch((error) => {
-				console.log(error.toJSON());
-			});
+		const response = await axios.patch('https://httpbin.org/patch');
 
 		expect(response.status).to.equal(StatusCodes.OK);
-		expect(response.config.method).to.equal('patch');
+		expect(response.config.url).to.have.string('/patch');
 	});
 
 	it('Consume PUT Service', async () => {
-		const response = await axios
-			.put('https://httpbin.org/status/200')
-			.catch((error) => {
-				console.log(error.toJSON());
-			});
+		const response = await axios.put('https://httpbin.org/put');
 
 		expect(response.status).to.equal(StatusCodes.OK);
-		expect(response.config.method).to.equal('put');
+		expect(response.config.url).to.have.string('/put');
 	});
 
 	it('Consume DELETE Service', async () => {
-		const response = await axios
-			.delete('https://httpbin.org/status/200')
-			.catch((error) => {
-				console.log(error.toJSON());
-			});
+		const response = await axios.delete('https://httpbin.org/delete');
 
 		expect(response.status).to.equal(StatusCodes.OK);
-		expect(response.config.method).to.equal('delete');
+		expect(response.config.url).to.have.string('/delete');
 	});
 });
