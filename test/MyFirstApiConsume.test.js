@@ -32,31 +32,31 @@ describe('First Api Tests', () => {
 	});
 
 	it('Consume PATCH Service', async () => {
-		const query = {
+		const userData = {
 			name: 'Diego Alejandro',
 			surname: 'Cortes Roa',
 			career: 'Multimedia Engineer',
 		};
 
-		const response = await axios.patch('https://httpbin.org/patch', query);
+		const response = await axios.patch('https://httpbin.org/patch', userData);
 
 		expect(response.status).to.equal(StatusCodes.OK);
 		expect(response.config.url).to.have.string('/patch');
-		expect(JSON.parse(response.data.data)).to.eql(query);
+		expect(JSON.parse(response.data.data)).to.eql(userData);
 	});
 
 	it('Consume PUT Service', async () => {
-		const query = {
+		const body = {
 			name: 'Diego Alejandro',
 			surname: 'Cortes Roa',
 			career: 'Multimedia Engineer',
 		};
 
-		const response = await axios.put('https://httpbin.org/put', query);
+		const response = await axios.put('https://httpbin.org/put', body);
 
 		expect(response.status).to.equal(StatusCodes.OK);
 		expect(response.config.url).to.have.string('/put');
-		expect(JSON.parse(response.data.data)).to.eql(response.data.json);
+		expect(response.data.json).to.eql(body);
 	});
 
 	it('Consume DELETE Service', async () => {
