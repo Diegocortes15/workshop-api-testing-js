@@ -2,9 +2,11 @@ const axios = require('axios');
 const { expect } = require('chai');
 const { StatusCodes } = require('http-status-codes');
 
+const UrlBase = 'https://httpbin.org';
+
 describe('First Api Tests', () => {
   it('Consume GET Service', async () => {
-    const response = await axios.get('https://httpbin.org/ip');
+    const response = await axios.get(`${UrlBase}/ip`);
 
     expect(response.status).to.equal(StatusCodes.OK);
     expect(response.data).to.have.property('origin');
@@ -17,17 +19,16 @@ describe('First Api Tests', () => {
       city: 'New York'
     };
 
-    const response = await axios.get('https://httpbin.org/get', { query });
+    const response = await axios.get(`${UrlBase}/get`, { query });
 
     expect(response.status).to.equal(StatusCodes.OK);
     expect(response.config.query).to.eql(query);
   });
 
   it('Consume HEAD Service', async () => {
-    const response = await axios.head('https://httpbin.org/headers');
+    const response = await axios.head(`${UrlBase}/headers`);
 
     expect(response.status).to.equal(StatusCodes.OK);
-    expect(response.config.url).to.have.string('/head');
     expect(response.data).to.be.empty;
   });
 
@@ -38,10 +39,9 @@ describe('First Api Tests', () => {
       career: 'Multimedia Engineer'
     };
 
-    const response = await axios.patch('https://httpbin.org/patch', userData);
+    const response = await axios.patch(`${UrlBase}/patch`, userData);
 
     expect(response.status).to.equal(StatusCodes.OK);
-    expect(response.config.url).to.have.string('/patch');
     expect(JSON.parse(response.data.data)).to.eql(userData);
   });
 
@@ -52,18 +52,16 @@ describe('First Api Tests', () => {
       career: 'Multimedia Engineer'
     };
 
-    const response = await axios.put('https://httpbin.org/put', body);
+    const response = await axios.put(`${UrlBase}/put`, body);
 
     expect(response.status).to.equal(StatusCodes.OK);
-    expect(response.config.url).to.have.string('/put');
     expect(response.data.json).to.eql(body);
   });
 
   it('Consume DELETE Service', async () => {
-    const response = await axios.delete('https://httpbin.org/delete');
+    const response = await axios.delete(`${UrlBase}/delete`);
 
     expect(response.status).to.equal(StatusCodes.OK);
-    expect(response.config.url).to.have.string('/delete');
     expect(response.data.data).to.be.empty;
   });
 });
