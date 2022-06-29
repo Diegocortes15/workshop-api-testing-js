@@ -2,11 +2,11 @@ const axios = require('axios');
 const { expect } = require('chai');
 const { StatusCodes } = require('http-status-codes');
 
-const UrlBase = 'https://httpbin.org';
+const urlBase = 'https://httpbin.org';
 
 describe('First Api Tests', () => {
   it('Consume GET Service', async () => {
-    const response = await axios.get(`${UrlBase}/ip`);
+    const response = await axios.get(`${urlBase}/ip`);
 
     expect(response.status).to.equal(StatusCodes.OK);
     expect(response.data).to.have.property('origin');
@@ -19,14 +19,14 @@ describe('First Api Tests', () => {
       city: 'New York'
     };
 
-    const response = await axios.get(`${UrlBase}/get`, { query });
+    const response = await axios.get(`${urlBase}/get`, { query });
 
     expect(response.status).to.equal(StatusCodes.OK);
     expect(response.config.query).to.eql(query);
   });
 
   it('Consume HEAD Service', async () => {
-    const response = await axios.head(`${UrlBase}/headers`);
+    const response = await axios.head(`${urlBase}/headers`);
 
     expect(response.status).to.equal(StatusCodes.OK);
     expect(response.data).to.be.empty;
@@ -39,7 +39,7 @@ describe('First Api Tests', () => {
       career: 'Multimedia Engineer'
     };
 
-    const response = await axios.patch(`${UrlBase}/patch`, userData);
+    const response = await axios.patch(`${urlBase}/patch`, userData);
 
     expect(response.status).to.equal(StatusCodes.OK);
     expect(JSON.parse(response.data.data)).to.eql(userData);
@@ -52,14 +52,14 @@ describe('First Api Tests', () => {
       career: 'Multimedia Engineer'
     };
 
-    const response = await axios.put(`${UrlBase}/put`, body);
+    const response = await axios.put(`${urlBase}/put`, body);
 
     expect(response.status).to.equal(StatusCodes.OK);
     expect(response.data.json).to.eql(body);
   });
 
   it('Consume DELETE Service', async () => {
-    const response = await axios.delete(`${UrlBase}/delete`);
+    const response = await axios.delete(`${urlBase}/delete`);
 
     expect(response.status).to.equal(StatusCodes.OK);
     expect(response.data.data).to.be.empty;
