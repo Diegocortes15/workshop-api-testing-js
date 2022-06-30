@@ -9,7 +9,6 @@ chai.use(chaiSubset);
 
 const urlBase = 'https://api.github.com';
 const usersResource = 'users';
-// const reposResource = 'repos';
 const githubUserName = 'aperdomob';
 const repositoryName = 'jasmine-json-report';
 
