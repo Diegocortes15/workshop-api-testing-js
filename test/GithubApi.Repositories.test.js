@@ -9,12 +9,15 @@ chai.use(chaiSubset);
 
 const urlBase = 'https://api.github.com';
 const usersResource = 'users';
-const reposResource = 'repos';
+// const reposResource = 'repos';
 const githubUserName = 'aperdomob';
 const repositoryName = 'jasmine-json-report';
 
-const repositoryUrl = `${urlBase}/${reposResource}/${githubUserName}/${repositoryName}`;
 const userUrl = `${urlBase}/${usersResource}/${githubUserName}`;
+
+const repository = {
+  readme: {}
+};
 
 describe('Consume GET methods', () => {
   it(`Checking name, company, and location to the given user "${githubUserName}"`, async () => {
@@ -42,17 +45,22 @@ describe('Consume GET methods', () => {
 
     expect(response.status).to.equal(StatusCodes.OK);
 
-    const repository = await response.data.find(
-      ({ name }) => name === repositoryName
-    );
+    const {
+      full_name: fullName,
+      private: personal,
+      description,
+      url
+    } = await response.data.find(({ name }) => name === repositoryName);
 
-    expect(repository.full_name).to.equal('aperdomob/jasmine-json-report');
-    expect(repository.private).to.be.false;
-    expect(repository.description).to.equal('A Simple Jasmine JSON Report');
+    repository.url = url;
+
+    expect(fullName).to.equal('aperdomob/jasmine-json-report');
+    expect(personal).to.be.false;
+    expect(description).to.equal('A Simple Jasmine JSON Report');
   });
 
   it('Should download repository in zip', async () => {
-    const response = await axios.get(`${repositoryUrl}/zipball/master`, {
+    const response = await axios.get(`${repository.url}/zipball/master`, {
       headers: {
         Authorization: `${process.env.ACCESS_TOKEN}`
       }
@@ -73,7 +81,7 @@ describe('Consume GET methods', () => {
       sha: fileSha
     };
 
-    const response = await axios.get(`${repositoryUrl}/contents`, {
+    const response = await axios.get(`${repository.url}/contents`, {
       headers: {
         Authorization: `${process.env.ACCESS_TOKEN}`
       }
@@ -85,18 +93,17 @@ describe('Consume GET methods', () => {
       ({ name }) => name === fileName
     );
 
+    repository.readme.download_url = readmeFile.download_url;
+
     expect(readmeFile).to.containSubset(expectedFormat);
   });
 
   it('Verify md5 from README.md', async () => {
-    const response = await axios.get(
-      'https://raw.githubusercontent.com/aperdomob/jasmine-json-report/master/README.md',
-      {
-        headers: {
-          Authorization: `${process.env.ACCESS_TOKEN}`
-        }
+    const response = await axios.get(repository.readme.download_url, {
+      headers: {
+        Authorization: `${process.env.ACCESS_TOKEN}`
       }
-    );
+    });
 
     const expectedMd5 = md5(response.data);
 
