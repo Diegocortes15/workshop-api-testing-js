@@ -20,14 +20,11 @@ const repository = {
 
 describe('Consume GET methods', () => {
   it(`Checking name, company, and location to the given user "${githubUserName}"`, async () => {
-    const response = await axios.get(
-      `${urlBase}/${usersResource}/${githubUserName}`,
-      {
-        headers: {
-          Authorization: `${process.env.ACCESS_TOKEN}`
-        }
+    const response = await axios.get(`${userUrl}`, {
+      headers: {
+        Authorization: `${process.env.ACCESS_TOKEN}`
       }
-    );
+    });
 
     expect(response.status).to.equal(StatusCodes.OK);
     expect(response.data.name).to.equal('Alejandro Perdomo');
