@@ -13,7 +13,7 @@ describe('Github Api Test', () => {
         `${urlBase}/repos/${githubUserName}/${repository}`,
         {
           headers: {
-            Authorization: `${process.env.ACCESS_TOKEN}`
+            Authorization: `token ${process.env.ACCESS_TOKEN}`
           }
         }
       );
