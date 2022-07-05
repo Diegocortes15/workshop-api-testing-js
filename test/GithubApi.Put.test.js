@@ -19,11 +19,10 @@ describe('Consume PUT methods', () => {
       `https://api.github.com/user/following/${userToFollow}`
     );
 
-    indempotent.followUser.data = response.data;
-    indempotent.followUser.status = response.status;
-
     expect(response.status).to.equal(StatusCodes.NO_CONTENT);
     expect(response.data).to.be.empty;
+
+    indempotent.followUser.data = response.data;
   });
 
   it(`Should be following the user ${userToFollow}`, async () => {
@@ -31,20 +30,35 @@ describe('Consume PUT methods', () => {
       `https://api.github.com/users/${user}/following`
     );
 
+    expect(response.status).to.equal(StatusCodes.OK);
+
     const expectedUser = response.data.find(
       ({ login }) => login === userToFollow
     );
 
-    expect(response.status).to.equal(StatusCodes.OK);
     expect(expectedUser.login).to.equal(userToFollow);
+
+    indempotent.userFollowed = expectedUser.login;
   });
 
   it('Verify indempotent to follow a user', async () => {
-    const response = await followUser.put(
+    const responseFollowUser = await followUser.put(
       `https://api.github.com/user/following/${userToFollow}`
     );
 
-    expect(response.status).to.equal(indempotent.followUser.status);
-    expect(response.data).to.equal(indempotent.followUser.data);
+    expect(responseFollowUser.status).to.equal(StatusCodes.NO_CONTENT);
+    expect(responseFollowUser.data).to.equal(indempotent.followUser.data);
+
+    const responseFollowedUsers = await axios.get(
+      `https://api.github.com/users/${user}/following`
+    );
+
+    expect(responseFollowedUsers.status).to.equal(StatusCodes.OK);
+
+    const expectedUser = responseFollowedUsers.data.find(
+      ({ login }) => login === userToFollow
+    );
+
+    expect(expectedUser.login).to.equal(indempotent.userFollowed);
   });
 });
