@@ -20,7 +20,6 @@ describe('Consume POST and PATCH methods', () => {
 
     expect(response.status).to.equal(StatusCodes.OK);
     expect(response.data.public_repos).to.be.at.least(1);
-    // console.log(response.data);
   });
 
   it(`Verify that repository ${repositoryName} exist and won't be private`, async () => {
@@ -34,7 +33,6 @@ describe('Consume POST and PATCH methods', () => {
 
     expect(isPrivate).to.be.false;
     expect(repoName).to.equal('FrontEndStore');
-    // const repository = await response.data.find(({ name }) => name === repositoryName);
   });
 
   it(`Should create a issue on a ${repositoryName} repository`, async () => {
