@@ -14,7 +14,7 @@ const userUrl = `${urlBase}/users/${githubUserName}`;
 
 const issueCreated = {};
 
-describe.only('Consume POST and PATCH methods', () => {
+describe('Consume POST and PATCH methods', () => {
   it(`Verify that user ${githubUserName} has at least one repository`, async () => {
     const response = await userLogged.get(`${urlBase}/user`);
 
