@@ -10,9 +10,7 @@ describe('Consume HEAD method and test redirecting url', () => {
     const response = await axios.head(repositoryUrl);
 
     expect(response.status).to.equal(StatusCodes.OK);
-    expect(response.request.res.responseUrl).to.equal(
-      'https://github.com/aperdomob/new-redirect-test'
-    );
+    expect(response.request.res.responseUrl).to.equal(expectedRedirectUrl);
   });
 
   it('Verify that response has redirected url with GET method', async () => {
