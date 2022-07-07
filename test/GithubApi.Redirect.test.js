@@ -6,7 +6,7 @@ const repository = {
   url: 'https://github.com/aperdomob/redirect-test'
 };
 
-describe('a', () => {
+describe('Consume HEAD method and test redirecting url', () => {
   it('Verify that response has redirected url with HEAD method', async () => {
     const response = await axios.head(repository.url);
 
