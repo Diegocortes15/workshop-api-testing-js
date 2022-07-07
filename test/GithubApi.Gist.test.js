@@ -10,7 +10,7 @@ const baseUrl = 'https://api.github.com';
 
 const gistCreated = {};
 
-describe.only('Consume DELETE method and non-existing resource', () => {
+describe('Consume DELETE method and non-existing resource', () => {
   it('Should create a gist and must be verifying its data', async () => {
     const gistBody = {
       description: 'Example of a gist',
