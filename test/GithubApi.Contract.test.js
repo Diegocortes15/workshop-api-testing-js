@@ -20,8 +20,6 @@ describe('Given event Github API resources', () => {
     });
 
     it('then the body should have a schema', async () => {
-      // console.log(response);
-      // expect(response.status).to.equal(200);
       expect(response).to.be.jsonSchema(listPublicEventsSchema);
     });
   });
