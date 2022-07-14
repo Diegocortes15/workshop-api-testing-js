@@ -7,50 +7,52 @@ const headers = {
 };
 
 const baseUrl = 'https://api.github.com';
-const gistCreated = {};
 
 describe('FETCH - Consume DELETE method and non-existing resource', () => {
-  it('Should create a gist and must be verifying its data', async () => {
-    const gistBody = {
-      description: 'Example of a gist',
-      public: false,
-      files: {
-        'README.md': {
-          content: 'Hello World by Diegocortes15'
-        }
+  const gistBody = {
+    description: 'Example of a gist',
+    public: false,
+    files: {
+      'README.md': {
+        content: 'Hello World by Diegocortes15'
       }
-    };
+    }
+  };
 
-    const response = await fetch(`${baseUrl}/gists`, {
+  let response;
+  let data;
+
+  before(async () => {
+    response = await fetch(`${baseUrl}/gists`, {
       method: 'POST',
       headers,
       body: JSON.stringify(gistBody)
     });
+  });
 
+  it('Should create a gist and must be verifying its data', async () => {
     expect(response.status).to.equal(StatusCodes.CREATED);
 
-    const data = await response.json();
-
-    gistCreated.url = data.url;
+    data = await response.json();
 
     expect(data).to.containSubset(gistBody);
   });
 
   it('Should return the previous gist created', async () => {
-    const response = await fetch(gistCreated.url, {
+    response = await fetch(data.url, {
       method: 'GET',
       headers
     });
 
     expect(response.status).to.equal(StatusCodes.OK);
 
-    const data = await response.json();
+    data = await response.json();
 
-    expect(data.url).to.equal(gistCreated.url);
+    expect(data.url).to.equal(data.url);
   });
 
   it('Should delete the gist created', async () => {
-    const response = await fetch(gistCreated.url, {
+    response = await fetch(data.url, {
       method: 'DELETE',
       headers
     });
@@ -58,7 +60,7 @@ describe('FETCH - Consume DELETE method and non-existing resource', () => {
   });
 
   it('Should verify that the gist created has been deleted', async () => {
-    const response = await fetch(gistCreated.url, {
+    response = await fetch(data.url, {
       method: 'GET',
       headers
     });
